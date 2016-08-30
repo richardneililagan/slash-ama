@@ -15,9 +15,12 @@ defmodule SlashAma.Router do
   end
 
   get "/" do
+    bindings = [assigns: [
+      client_id: System.get_env("SLACK_CLIENT_ID")
+    ]]
     conn
     |> put_resp_content_type("text/html")
-    |> send_resp(200, render_template("index.pug"))
+    |> send_resp(200, render_template("index.pug", bindings))
   end
 
   match _ do
