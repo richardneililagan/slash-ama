@@ -3,6 +3,7 @@ defmodule SlashAma.Router do
   use Plug.Debugger
 
   plug Plug.Logger
+  plug Plug.Parsers, parsers: [:urlencoded]
   plug :match
   plug :dispatch
 
@@ -24,17 +25,28 @@ defmodule SlashAma.Router do
   end
 
   get "/oauth" do
-    conn = conn |> fetch_query_params()
-    code = conn.query_params["code"]
     resp = Slack.post!("/oauth.access", {:form, [
        client_id: System.get_env("SLACK_CLIENT_ID"),
        client_secret: System.get_env("SLACK_CLIENT_SECRET"),
-       code: code
+       code: conn.params["code"]
     ]})
     resp.body |> IO.inspect
     bindings = [assigns: [auth_done: true]]
     conn
     |> send_resp(200, render_template("index.pug", bindings))
+  end
+
+  post "/command" do
+    resp = case String.split(conn.params["text"], " ", trim: true, parts: 2) do
+      ["start", args] ->
+        "Starting AMA with #{args}"
+      ["end"] ->
+        "Ending AMA"
+      _ ->
+        "Invalid command!"
+    end
+    conn
+    |> send_resp(200, resp)
   end
 
   match _ do
