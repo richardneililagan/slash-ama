@@ -15,7 +15,7 @@ defmodule SlashAma.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     dev_apps = Mix.env == :dev && [:exsync] || []
-    [applications: dev_apps ++ [:logger, :cowboy, :plug],
+    [applications: dev_apps ++ [:logger, :cowboy, :plug, :httpoison],
      mod: {SlashAma, []}]
   end
 
@@ -32,6 +32,8 @@ defmodule SlashAma.Mixfile do
     [{:cowboy, "~> 1.0.4"},
      {:plug, "~> 1.2"},
      {:expug, "~> 0.7"},
+     {:poison, "~> 2.2"},
+     {:httpoison, "~> 0.9"},
      {:exsync, "~> 0.1", only: :dev}]
   end
 end

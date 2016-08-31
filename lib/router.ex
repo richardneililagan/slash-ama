@@ -23,6 +23,19 @@ defmodule SlashAma.Router do
     |> send_resp(200, render_template("index.pug", bindings))
   end
 
+  get "/oauth" do
+    conn = conn |> fetch_query_params()
+    code = conn.query_params["code"]
+    resp = Slack.post!("/oauth.access", {:form, [
+       client_id: System.get_env("SLACK_CLIENT_ID"),
+       client_secret: System.get_env("SLACK_CLIENT_SECRET"),
+       code: code
+    ]})
+    resp.body |> IO.inspect
+    conn
+    |> send_resp(200, "Auth success")
+  end
+
   match _ do
     conn |> send_resp(404, "Not found")
   end
