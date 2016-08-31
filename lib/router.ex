@@ -32,8 +32,9 @@ defmodule SlashAma.Router do
        code: code
     ]})
     resp.body |> IO.inspect
+    bindings = [assigns: [auth_done: true]]
     conn
-    |> send_resp(200, "Auth success")
+    |> send_resp(200, render_template("index.pug", bindings))
   end
 
   match _ do
