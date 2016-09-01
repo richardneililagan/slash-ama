@@ -10,7 +10,9 @@ defmodule SlashAma do
     children = [
       # Starts a worker by calling: SlashAma.Worker.start_link(arg1, arg2, arg3)
       # worker(SlashAma.Worker, [arg1, arg2, arg3]),
-      Plug.Adapters.Cowboy.child_spec(:http, SlashAma.Router, [], [port: 4001])
+      Plug.Adapters.Cowboy.child_spec(:http, SlashAma.Router, [], [
+        port: (System.get_env("PORT") || "4001") |> String.to_integer()
+      ])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
